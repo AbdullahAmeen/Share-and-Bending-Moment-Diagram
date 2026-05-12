@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Share Force and Bending Moment</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <div class="background-glow glow1"></div>
+    <div class="background-glow glow2"></div>
+
+    <div class="container">
+        <section class="hero">
+            <div class="hero-text">
+                <div class="badge">Advanced Structural Engineering Tool</div>
+                <h1>Beam Analysis Studio</h1>
+                <p>
+                    Analyze shear force and bending moment for simply supported,
+                    cantilever, and custom beam loading conditions with a modern,
+                    interactive engineering dashboard.
+                </p>
+            </div>
+        </section>
+
+        <div class="row g-4">
+            <div class="col-12 col-lg-4">
+                <div class="panel">
+                    <h2 style="margin-left: 10px; margin-top: 10px; padding-bottom: 10px;">Beam Configuration</h2>
+
+                    <div class="input-group">
+                        <label>Beam Type &nbsp;</label>
+                        <select id="beamType" class="form-select firstinput">
+                            <option value="simply">Simply Supported Beam</option>
+                            <option value="cantilever">Cantilever Beam</option>
+                            <option value="fixed">Fixed Beam</option>
+                        </select>
+                    </div><br>
+
+                    <div class="input-group">
+                        <label>Beam Length (m)</label>
+                        <input type="number" id="beamLength" value="10" min="1" step="0.1" class="form-control firstinput" />
+                    </div>
+
+                <hr style="margin: 22px 0; border-color: rgba(255,255,255,0.08);" />
+
+                <h2 style="margin-left: 10px;">Add Load</h2>
+
+                <div class="input-group">
+                    <label>Load Type &nbsp;</label>
+                    <select id="loadType" class="form-select">
+                        <option value="point">Point Load</option>
+                        <option value="udl">Uniformly Distributed Load</option>
+                    </select>
+                </div> <br>
+
+                <div class="input-group">
+                    <label>Magnitude (kN or kN/m)</label>
+                    <input type="number" id="magnitude" value="20" step="0.1" class="form-control" />
+                </div> <br>
+
+                <div class="input-group" id="positionGroup">
+                    <label>Position (m)</label>
+                    <input type="number" id="position" placeholder="e.g. 4" step="0.1" class="form-control" />
+                </div>
+
+                <div class="input-group" id="endPositionGroup" style="display: none;">
+                    <label>End Position (m)</label>
+                    <input type="number" id="endPosition" placeholder="e.g. 8" step="0.1" class="form-control" />
+                </div>
+
+                <div class="actions">
+                    <button type="button" id="addLoadButton">Add Load</button>
+                    <button type="button" id="resetButton">Reset</button>
+                </div> <br>
+
+                <div class="load-list" id="loadList">
+                    <p>No loads added yet.</p>
+                </div> <br>
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-8">
+                <div class="panel output-panel">
+                    <h2 style="margin-left: 10px; margin-top: 10px;">Results</h2>
+
+                    <div class="summary-grid">
+                    <div class="summary-card">
+                        <span>Left Reaction</span>
+                        <strong id="leftReaction">0 kN</strong>
+                    </div>
+                    <div class="summary-card">
+                        <span>Right Reaction</span>
+                        <strong id="rightReaction">0 kN</strong>
+                    </div>
+                    <div class="summary-card">
+                        <span>Max Shear</span>
+                        <strong id="maxShear">0 kN</strong>
+                    </div>
+                    <div class="summary-card">
+                        <span>Max Moment</span>
+                        <strong id="maxMoment">0 kN�m</strong>
+                    </div>
+                </div><br>
+
+                <div class="chart-grid">
+                    <div class="chart-card">
+                        <h3 style="margin-left: 10px;">Shear Force Diagram</h3>
+                        <canvas id="sfdChart"></canvas>
+                    </div> <br>
+                    <div class="chart-card">
+                        <h3 style="margin-left: 10px;">Bending Moment Diagram</h3>
+                        <canvas id="bmdChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
