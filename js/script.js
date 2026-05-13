@@ -14,6 +14,35 @@ const loadList = document.getElementById('loadList');
 const addLoadButton = document.getElementById('addLoadButton');
 const resetButton = document.getElementById('resetButton');
 
+// Custom Alert Function
+function showCustomAlert(message, title = 'Alert') {
+  const alertElement = document.getElementById('customAlert');
+  if (alertElement) {
+    document.getElementById('alertTitle').textContent = title;
+    document.getElementById('alertMessage').textContent = message;
+    alertElement.classList.add('show');
+  }
+}
+
+function closeCustomAlert() {
+  const alertElement = document.getElementById('customAlert');
+  if (alertElement) {
+    alertElement.classList.remove('show');
+  }
+}
+
+// Setup alert event listener after DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+  const customAlertOverlay = document.getElementById('customAlert');
+  if (customAlertOverlay) {
+    customAlertOverlay.addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeCustomAlert();
+      }
+    });
+  }
+});
+
 function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
 }
@@ -40,18 +69,18 @@ function addLoad() {
   const endPos = parseFloat(endPosition.value);
 
   if (Number.isNaN(mag) || mag <= 0) {
-    alert('Enter a valid load magnitude.');
+    showCustomAlert('Enter a valid load magnitude.', 'Validation Error');
     return;
   }
 
   if (Number.isNaN(pos) || pos < 0 || pos > len) {
-    alert('Enter a valid position within the beam length.');
+    showCustomAlert('Enter a valid position within the beam length.', 'Validation Error');
     return;
   }
 
   if (type === 'udl') {
     if (Number.isNaN(endPos) || endPos <= pos || endPos > len) {
-      alert('Enter a valid end position greater than the start position.');
+      showCustomAlert('Enter a valid end position greater than the start position.', 'Validation Error');
       return;
     }
     loads.push({ type, magnitude: mag, start: pos, end: endPos });

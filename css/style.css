@@ -196,3 +196,121 @@
   cursor: pointer;
 }
 
+/* Custom Alert Modal Styles */
+.custom-alert-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 9999;
+  justify-content: center;
+  align-items: center;
+}
+
+.custom-alert-overlay.show {
+  display: flex;
+}
+
+.custom-alert-modal {
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  border: 2px solid #38bdf8;
+  border-radius: 12px;
+  box-shadow: 
+    0 0 30px rgba(56, 189, 248, 0.3),
+    inset 0 0 20px rgba(56, 189, 248, 0.1);
+  min-width: 350px;
+  max-width: 500px;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.alert-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid rgba(56, 189, 248, 0.3);
+  background: rgba(56, 189, 248, 0.1);
+}
+
+.alert-header h3 {
+  margin: 0;
+  color: #00d4ff;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.alert-close {
+  background: none;
+  border: none;
+  color: #cbd5e1;
+  font-size: 28px;
+  cursor: pointer;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+}
+
+.alert-close:hover {
+  color: #38bdf8;
+}
+
+.alert-body {
+  padding: 25px 20px;
+}
+
+.alert-body p {
+  margin: 0;
+  color: #e2e8f0;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.alert-footer {
+  padding: 15px 20px;
+  text-align: right;
+  border-top: 1px solid rgba(56, 189, 248, 0.3);
+}
+
+.alert-btn-ok {
+  background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+  border: 1px solid #00d4ff;
+  color: #ffffff;
+  padding: 10px 30px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.alert-btn-ok:hover {
+  background: linear-gradient(135deg, #0ea5e9, #38bdf8);
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.5);
+  transform: scale(1.05);
+}
+
+.alert-btn-ok:active {
+  transform: scale(0.98);
+}
+
+.momentdescription{
+  padding: 50px 50px;
+}
