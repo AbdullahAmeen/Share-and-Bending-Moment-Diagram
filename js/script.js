@@ -253,7 +253,7 @@ function renderBeam() {
   document.getElementById('leftReaction').innerText = `${formatNumber(leftReaction)} kN`;
   document.getElementById('rightReaction').innerText = beamType.value === 'cantilever' ? '-' : `${formatNumber(rightReaction)} kN`;
   document.getElementById('maxShear').innerText = `${formatNumber(Math.max(...shearVals.map(Math.abs)))} kN`;
-  document.getElementById('maxMoment').innerText = `${formatNumber(Math.max(...momentVals.map(Math.abs)))} kN�m`;
+  document.getElementById('maxMoment').innerText = `${formatNumber(Math.max(...momentVals.map(Math.abs)))} kN.m`;
 
   updateCharts(xVals, shearVals, momentVals);
 }
