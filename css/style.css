@@ -312,5 +312,15 @@
 }
 
 .momentdescription{
-  padding: 50px 50px;
+  padding: 10px;
+
+}
+
+.remove-load{
+  background: rgb(8, 92, 160);
+  border: 1px solid rgb(204, 83, 235);
+  color: #ffffff;
+  padding: 5px 10px;
+  border-radius: 8px;
+  cursor: pointer;
 }

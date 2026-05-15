@@ -13,6 +13,7 @@ const loadList = document.getElementById('loadList');
 
 const addLoadButton = document.getElementById('addLoadButton');
 const resetButton = document.getElementById('resetButton');
+const beamLayoutCanvas = document.getElementById('beamLayoutCanvas');
 
 // Custom Alert Function
 function showCustomAlert(message, title = 'Alert') {
@@ -284,7 +285,118 @@ function renderBeam() {
   document.getElementById('maxShear').innerText = `${formatNumber(Math.max(...shearVals.map(Math.abs)))} kN`;
   document.getElementById('maxMoment').innerText = `${formatNumber(Math.max(...momentVals.map(Math.abs)))} kN.m`;
 
+  renderBeamDiagram(xVals, shearVals, momentVals, leftReaction, rightReaction);
   updateCharts(xVals, shearVals, momentVals);
+}
+
+function renderBeamDiagram(xVals, shearVals, momentVals, leftReaction, rightReaction) {
+  const canvas = beamLayoutCanvas;
+  if (!canvas || !canvas.getContext) return;
+
+  const ctx = canvas.getContext('2d');
+  const rect = canvas.getBoundingClientRect();
+  const scale = window.devicePixelRatio || 1;
+  const width = Math.max(rect.width, 400) * scale;
+  const height = 300 * scale;
+  canvas.width = width;
+  canvas.height = height;
+  canvas.style.height = '320px';
+
+  const beamLengthVal = parseFloat(beamLength.value) || 10;
+  const margin = 60 * scale;
+  const beamStart = margin;
+  const beamEnd = width - margin;
+  const beamY = height * 0.55;
+  const beamHeight = 10 * scale;
+  const unitScale = (beamEnd - beamStart) / beamLengthVal;
+
+  ctx.clearRect(0, 0, width, height);
+  ctx.fillStyle = '#e2e8f0';
+  ctx.strokeStyle = '#38bdf8';
+  ctx.lineWidth = 4 * scale;
+  ctx.lineCap = 'round';
+
+  // beam body
+  ctx.beginPath();
+  ctx.moveTo(beamStart, beamY);
+  ctx.lineTo(beamEnd, beamY);
+  ctx.stroke();
+
+  // supports
+  const supportSize = 20 * scale;
+  if (beamType.value === 'cantilever') {
+    ctx.fillStyle = '#7c3aed';
+    ctx.fillRect(beamStart - supportSize / 2, beamY - supportSize, supportSize / 1.5, supportSize * 2);
+    ctx.fillStyle = '#38bdf8';
+    ctx.fillRect(beamEnd - supportSize / 4, beamY - supportSize / 6, supportSize / 4, supportSize / 3);
+  } else {
+    ctx.fillStyle = '#38bdf8';
+    ctx.beginPath();
+    ctx.moveTo(beamStart - supportSize / 2, beamY + supportSize / 1.5);
+    ctx.lineTo(beamStart + supportSize / 2, beamY + supportSize / 1.5);
+    ctx.lineTo(beamStart, beamY);
+    ctx.closePath();
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(beamEnd - supportSize / 2, beamY + supportSize / 1.5);
+    ctx.lineTo(beamEnd + supportSize / 2, beamY + supportSize / 1.5);
+    ctx.lineTo(beamEnd, beamY);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  // Beam length label below the beam
+  ctx.fillStyle = '#cbd5e1';
+  ctx.font = `${16 * scale}px sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.fillText(`${formatNumber(beamLengthVal)} m`, (beamStart + beamEnd) / 2, beamY + 40 * scale);
+
+  const drawArrow = (x, y, length) => {
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.lineTo(x, y + length);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x - 6 * scale, y + length - 12 * scale);
+    ctx.lineTo(x, y + length);
+    ctx.lineTo(x + 6 * scale, y + length - 12 * scale);
+    ctx.stroke();
+  };
+
+  loads.forEach(load => {
+    if (load.type === 'point') {
+      const xPos = beamStart + clamp(load.position, 0, beamLengthVal) * unitScale;
+      ctx.strokeStyle = '#f97316';
+      ctx.lineWidth = 3 * scale;
+      drawArrow(xPos, beamY - 40 * scale, 40 * scale);
+      ctx.fillStyle = '#f97316';
+      ctx.font = `${13 * scale}px sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.fillText(`${formatNumber(load.magnitude)} kN`, xPos, beamY - 45 * scale);
+    } else {
+      const startX = beamStart + clamp(load.start, 0, beamLengthVal) * unitScale;
+      const endX = beamStart + clamp(load.end, load.start, beamLengthVal) * unitScale;
+      const udlHeight = 25 * scale;
+      ctx.fillStyle = 'rgba(248, 113, 113, 0.35)';
+      ctx.fillRect(startX, beamY - udlHeight, endX - startX, udlHeight);
+      ctx.strokeStyle = '#f87171';
+      ctx.lineWidth = 2 * scale;
+      ctx.strokeRect(startX, beamY - udlHeight, endX - startX, udlHeight);
+      ctx.fillStyle = '#f87171';
+      ctx.font = `${13 * scale}px sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.fillText(`${formatNumber(load.magnitude)} kN/m`, (startX + endX) / 2, beamY - udlHeight - 10 * scale);
+    }
+  });
+
+  // end markers
+  ctx.fillStyle = '#94a3b8';
+  ctx.font = `${12 * scale}px sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.fillText('0 m', beamStart, beamY + 40 * scale);
+  ctx.fillText(`${beamLengthVal.toFixed(1)} m`, beamEnd, beamY + 40 * scale);
+  ctx.textAlign = 'left';
+  ctx.fillText(beamType.value === 'cantilever' ? 'Cantilever support' : beamType.value === 'fixed' ? 'Fixed supports' : 'Simply supported', beamStart, beamY + 70 * scale);
 }
 
 function updateCharts(xVals, shearVals, momentVals) {
