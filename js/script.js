@@ -329,6 +329,35 @@ function renderBeamDiagram(xVals, shearVals, momentVals, leftReaction, rightReac
     ctx.fillRect(beamStart - supportSize / 2, beamY - supportSize, supportSize / 1.5, supportSize * 2);
     ctx.fillStyle = '#38bdf8';
     ctx.fillRect(beamEnd - supportSize / 4, beamY - supportSize / 6, supportSize / 4, supportSize / 3);
+  } else if (beamType.value === 'fixed') {
+    // draw fixed supports as solid blocks with hatch/tick marks
+    const blockW = supportSize * 1.2;
+    const blockH = supportSize * 1.8;
+    // left fixed block
+    ctx.fillStyle = '#1e40af';
+    ctx.fillRect(beamStart - blockW / 2, beamY - blockH / 2, blockW, blockH);
+    // vertical ticks/hatching to indicate fixed
+    ctx.strokeStyle = '#94a3b8';
+    ctx.lineWidth = 1 * scale;
+    const ticks = 5;
+    for (let i = 0; i < ticks; i += 1) {
+      const tx = beamStart - blockW / 2 + (i + 1) * (blockW / (ticks + 1));
+      ctx.beginPath();
+      ctx.moveTo(tx, beamY - blockH / 2);
+      ctx.lineTo(tx, beamY + blockH / 2);
+      ctx.stroke();
+    }
+
+    // right fixed block
+    ctx.fillStyle = '#1e40af';
+    ctx.fillRect(beamEnd - blockW / 2, beamY - blockH / 2, blockW, blockH);
+    for (let i = 0; i < ticks; i += 1) {
+      const tx = beamEnd - blockW / 2 + (i + 1) * (blockW / (ticks + 1));
+      ctx.beginPath();
+      ctx.moveTo(tx, beamY - blockH / 2);
+      ctx.lineTo(tx, beamY + blockH / 2);
+      ctx.stroke();
+    }
   } else {
     ctx.fillStyle = '#38bdf8';
     ctx.beginPath();
