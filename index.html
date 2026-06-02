@@ -6,6 +6,9 @@
     <title>Share Force and Bending Moment</title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        .label-indent { padding-left: 10px; }
+    </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
@@ -29,10 +32,10 @@
         <div class="row g-4">
             <div class="col-12 col-lg-4">
                 <div class="panel">
-                    <h2 style="margin-left: 10px; margin-top: 10px; padding-bottom: 10px;">Beam Configuration</h2>
+                    <h2 style="margin-left: 10px; margin-top: 10px; padding-bottom: 10px; padding-left: 10px;">Beam Configuration</h2>
 
                     <div class="input-group">
-                        <label>Beam Type &nbsp; </label><br>&thinsp;
+                        <label style="padding-left: 10px;">Beam Type </label><br>&thinsp;
                         <select id="beamType" class="form-select firstinput">
                             <option value="simply">Simply Supported Beam</option>
                             <option value="cantilever">Cantilever Beam</option>
@@ -41,16 +44,16 @@
                     </div><br>
 
                     <div class="input-group">
-                        <label>Beam Length (m)</label>
+                        <label style="padding-left: 8px;">Beam Length (m)</label>
                         <input type="number" id="beamLength" value="10" min="1" step="0.1" class="form-control firstinput" />
                     </div>
 
                 <hr style="margin: 22px 0; border-color: rgba(255,255,255,0.08);" />
 
-                <h2 style="margin-left: 10px;">Add Load</h2> <br>
+                <h2 style="margin-left: 10px;padding-left: 10px;">Add Load</h2> <br>
 
                 <div class="input-group">
-                    <label>Load Type &nbsp;</label> <br>
+                    <label style="padding-left: 10px;">Load Type</label> <br>
                     <select id="loadType" class="form-select">
                         <option value="point">Point Load</option>
                         <option value="udl">Uniformly Distributed Load</option>
@@ -58,12 +61,12 @@
                 </div> <br>
 
                 <div class="input-group">
-                    <label>Magnitude (kN)</label>
+                    <label style="padding-left: 10px;">Magnitude (kN)</label>
                     <input type="number" id="magnitude" value="20" step="0.1" class="form-control" />
                 </div> <br>
 
                 <div class="input-group" id="positionGroup">
-                    <label>Position (m)</label> <br>
+                    <label style="padding-left: 10px;">Position (m)</label> <br>
                     <input type="number" id="position" placeholder="e.g. 4" step="0.1" class="form-control" />
                 </div>
 
@@ -72,12 +75,12 @@
                     <input type="number" id="endPosition" placeholder="e.g. 8" step="0.1" class="form-control" />
                 </div>
 
-                <div class="actions">
+                <div class="actions" style="padding-left: 10px;">
                     <button type="button" id="addLoadButton">Add Load </button>&nbsp;&nbsp;
                     <button type="button" id="resetButton">Reset</button>
                 </div> <br>
 
-                <div class="load-list" id="loadList">
+                <div class="load-list" id="loadList" style="text-align: center;">
                     <p>No loads added yet.</p>
                 </div> <br>
             </div>
@@ -108,7 +111,7 @@
 
                 <div class="chart-grid">
                     <div class="chart-card">
-                        <h3 style="margin-left: 10px;">Beam Layout</h3>
+                        <h3 style="margin-left: 10px;">Beam Layout and Free Body Diagram</h3>
                         <canvas id="beamLayoutCanvas"></canvas>
                     </div> <br>
                     <div class="chart-card">
@@ -166,5 +169,6 @@
         <script>document.write(new Date().getFullYear())</script> Abdullah Ameen
         </p> <br>
     </div>
+
 </body>
 </html>

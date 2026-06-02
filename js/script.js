@@ -110,12 +110,12 @@ function renderLoads() {
             <button type="button" data-index="${index}" class="remove-load">Remove</button>
           </div>
         `;
-      }
+      } 
 
       return `
         <div class="load-item">
           <span>${index + 1}. Point load ${formatNumber(load.magnitude)} kN at ${formatNumber(load.position)} m</span>
-          <button type="button" data-index="${index}" class="remove-load">Remove</button>
+          <button type="button" data-index="${index}" class="remove-load">Remove</button> 
         </div>
       `;
     })
@@ -322,21 +322,72 @@ function renderBeamDiagram(xVals, shearVals, momentVals, leftReaction, rightReac
   ctx.lineTo(beamEnd, beamY);
   ctx.stroke();
 
-  // supports
+  // support drawing helpers
+  const drawArrow = (x, y, length, upward = false) => {
+    ctx.beginPath();
+    ctx.moveTo(x, y + (upward ? length : 0));
+    ctx.lineTo(x, y + (upward ? 0 : length));
+    ctx.stroke();
+    if (upward) {
+      ctx.beginPath();
+      ctx.moveTo(x - 6 * scale, y + 12 * scale);
+      ctx.lineTo(x, y);
+      ctx.lineTo(x + 6 * scale, y + 12 * scale);
+      ctx.stroke();
+    } else {
+      ctx.beginPath();
+      ctx.moveTo(x - 6 * scale, y + length - 12 * scale);
+      ctx.lineTo(x, y + length);
+      ctx.lineTo(x + 6 * scale, y + length - 12 * scale);
+      ctx.stroke();
+    }
+  };
+
+  const drawReaction = (x, value) => {
+    ctx.strokeStyle = '#22c55e';
+    ctx.lineWidth = 3 * scale;
+    const arrowTop = beamY - 40 * scale;
+    drawArrow(x, arrowTop, 40 * scale, true);
+    ctx.fillStyle = '#22c55e';
+    ctx.font = `${12 * scale}px sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.fillText(`${formatNumber(value)} kN`, x, arrowTop - 8 * scale);
+  };
+
+  const drawMomentSymbol = (x, clockwise, magnitudeLabel) => {
+    ctx.strokeStyle = '#fbbf24';
+    ctx.lineWidth = 2 * scale;
+    const radius = 18 * scale;
+    const centerY = beamY - 45 * scale;
+    ctx.beginPath();
+    if (clockwise) {
+      ctx.arc(x, centerY, radius, 0.7 * Math.PI, 2.3 * Math.PI);
+      ctx.moveTo(x + radius * Math.cos(2.3 * Math.PI), centerY + radius * Math.sin(2.3 * Math.PI));
+      ctx.lineTo(x + (radius - 8 * scale) * Math.cos(2.3 * Math.PI), centerY + (radius - 8 * scale) * Math.sin(2.3 * Math.PI));
+    } else {
+      ctx.arc(x, centerY, radius, 0.3 * Math.PI, 1.7 * Math.PI);
+      ctx.moveTo(x + radius * Math.cos(1.7 * Math.PI), centerY + radius * Math.sin(1.7 * Math.PI));
+      ctx.lineTo(x + (radius - 8 * scale) * Math.cos(1.7 * Math.PI), centerY + (radius - 8 * scale) * Math.sin(1.7 * Math.PI));
+    }
+    ctx.stroke();
+    ctx.fillStyle = '#fbbf24';
+    ctx.font = `${11 * scale}px sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.fillText(magnitudeLabel, x, centerY - radius - 6 * scale);
+  };
+
   const supportSize = 20 * scale;
   if (beamType.value === 'cantilever') {
     ctx.fillStyle = '#7c3aed';
     ctx.fillRect(beamStart - supportSize / 2, beamY - supportSize, supportSize / 1.5, supportSize * 2);
-    ctx.fillStyle = '#38bdf8';
-    ctx.fillRect(beamEnd - supportSize / 4, beamY - supportSize / 6, supportSize / 4, supportSize / 3);
+    drawReaction(beamStart, leftReaction);
+    drawMomentSymbol(beamStart + 10 * scale, true, `${formatNumber(momentVals[0])} kN·m`);
   } else if (beamType.value === 'fixed') {
-    // draw fixed supports as solid blocks with hatch/tick marks
     const blockW = supportSize * 1.2;
     const blockH = supportSize * 1.8;
-    // left fixed block
     ctx.fillStyle = '#1e40af';
     ctx.fillRect(beamStart - blockW / 2, beamY - blockH / 2, blockW, blockH);
-    // vertical ticks/hatching to indicate fixed
+    ctx.fillRect(beamEnd - blockW / 2, beamY - blockH / 2, blockW, blockH);
     ctx.strokeStyle = '#94a3b8';
     ctx.lineWidth = 1 * scale;
     const ticks = 5;
@@ -347,10 +398,6 @@ function renderBeamDiagram(xVals, shearVals, momentVals, leftReaction, rightReac
       ctx.lineTo(tx, beamY + blockH / 2);
       ctx.stroke();
     }
-
-    // right fixed block
-    ctx.fillStyle = '#1e40af';
-    ctx.fillRect(beamEnd - blockW / 2, beamY - blockH / 2, blockW, blockH);
     for (let i = 0; i < ticks; i += 1) {
       const tx = beamEnd - blockW / 2 + (i + 1) * (blockW / (ticks + 1));
       ctx.beginPath();
@@ -358,6 +405,10 @@ function renderBeamDiagram(xVals, shearVals, momentVals, leftReaction, rightReac
       ctx.lineTo(tx, beamY + blockH / 2);
       ctx.stroke();
     }
+    drawReaction(beamStart, leftReaction);
+    drawReaction(beamEnd, rightReaction);
+    drawMomentSymbol(beamStart + 10 * scale, false, `${formatNumber(momentVals[0])} kN·m`);
+    drawMomentSymbol(beamEnd - 10 * scale, true, `${formatNumber(momentVals[momentVals.length - 1])} kN·m`);
   } else {
     ctx.fillStyle = '#38bdf8';
     ctx.beginPath();
@@ -372,6 +423,8 @@ function renderBeamDiagram(xVals, shearVals, momentVals, leftReaction, rightReac
     ctx.lineTo(beamEnd, beamY);
     ctx.closePath();
     ctx.fill();
+    drawReaction(beamStart, leftReaction);
+    drawReaction(beamEnd, rightReaction);
   }
 
   // Beam length label below the beam
@@ -379,18 +432,6 @@ function renderBeamDiagram(xVals, shearVals, momentVals, leftReaction, rightReac
   ctx.font = `${16 * scale}px sans-serif`;
   ctx.textAlign = 'center';
   ctx.fillText(`${formatNumber(beamLengthVal)} m`, (beamStart + beamEnd) / 2, beamY + 40 * scale);
-
-  const drawArrow = (x, y, length) => {
-    ctx.beginPath();
-    ctx.moveTo(x, y);
-    ctx.lineTo(x, y + length);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(x - 6 * scale, y + length - 12 * scale);
-    ctx.lineTo(x, y + length);
-    ctx.lineTo(x + 6 * scale, y + length - 12 * scale);
-    ctx.stroke();
-  };
 
   loads.forEach(load => {
     if (load.type === 'point') {
