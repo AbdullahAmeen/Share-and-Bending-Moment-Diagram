@@ -1,0 +1,12 @@
+{
+  "background_color": "#3b4f8e",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "Share and Bending Moment",
+  "orientation": "any",
+  "scope": "/",
+  "short_name": "Moment Diagram",
+  "start_url": "/",
+  "theme_color": "#ffffff",
+  "id": "Share and Bending Moment"
+}
