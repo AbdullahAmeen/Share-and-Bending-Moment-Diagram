@@ -1,0 +1,9 @@
+{
+  "name": "beam-analysis-studio",
+  "version": "1.0.0",
+  "description": "Shear force, bending moment, and deflection analysis for simply supported, cantilever, fixed, and continuous beams, with moving-load envelopes.",
+  "private": true,
+  "scripts": {
+    "test": "node --test"
+  }
+}
